@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript">
+	var xhr=null;
+	function findPwd(){
+		var id=document.getElementById("id").value;
+		xhr=new XMLHttpRequest();
+		xhr.onreadystatechange=getResult; //콜백함수 등록하기
+		xhr.open('get','findPwd.jsp?id=' + id,true);
+		xhr.send();
+	}
+	function getResult(){
+		if(xhr.readyState==4 && xhr.status==200){
+			var result1 = xhr.responseXML;
+			var div = document.getElementById("result");
+			var result = result.getElementsByTagName("result")[0].firstChild.nodeValue;
+			
+			alert(result);
+			
+		}
+	}
+</script>
+</head>
+<body>
+<h2>비밀번호 찾기</h2>
+아이디 <input type="text" id="id"><br>
+<input type="button" value="찾기" onclick="findPwd()">
+<div id="result"></div>
+</body>
+</html>
+
+
+
+
+
+

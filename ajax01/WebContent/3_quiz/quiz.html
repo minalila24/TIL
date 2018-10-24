@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script>
+var xhr=null;
+function calc(){
+	var num1=document.getElementById("num1").value;
+	var num2=document.getElementById("num2").value;
+	var oper=document.getElementById("oper").value;
+	
+	xhr=new XMLHttpRequest();
+	xhr.onreadystatechange=getResult;
+	xhr.open('get','calc.jsp?num1='+num1+'&num2='+num2+'&oper='+oper,true);
+	xhr.send();
+}
+
+function getResult(){
+	if(xhr.readyState==4 && xhr.status==200){
+		var data=xhr.responseXML;
+		var div=document.getElementById("result");
+		var code=data.getElementsByTagName("code")[0].firstChild.nodeValue;
+		div.innerHTML=code;
+	}
+}
+</script>
+</head>
+<body>
+<input type="text" id="num1" size="10">
+<select id="oper">
+	<option value="1">+</option>
+	<option value="2">-</option>
+	<option value="3">*</option>
+	<option value="4">/</option>
+</select>
+<input type="text" id="num2" size="10">
+<!--버튼을 누르면 calc.jsp에서 연산하여 결과를 div에 출력하기(ajax)사용 -->
+<input type="button" value="ajax로 계산" onclick="calc()">
+<div id="result">
+</div>
+</body>
+</html>

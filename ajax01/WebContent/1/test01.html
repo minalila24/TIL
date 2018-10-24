@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript">
+	var xhr=null;
+	function getData(){
+		//XMLHttpRequest객체 생성
+		xhr=new XMLHttpRequest();
+		//서버로부터 응답이 오면 자동호출하는 콜백함수 등록
+		xhr.onreadystatechange=callback;
+		//open메소드로 서버정보 설정
+		xhr.open('get','book.xml',true);
+		//서버에 요청하기
+		xhr.send();
+	}
+	//서버에서 응답이 오면 callback함수자동호출
+	function callback(){
+		/*
+		   readyState=0 : open호출전(서버와 연결전)
+		   readyState=1 : send호출전(서버와 연결된 상태)
+		   readyState=2 : request를 받은 상태
+		   readyState=3 : 서버에서 request처리중
+		   readyState=4 : 서버로부터 응답이 완료된 경우
+		*/
+		//xhr.readyState==4 : 서버로부터 응답이 완료된경우
+		//xhr.status==200 : 응답이 성공적인경우
+		if(xhr.readyState==4 && xhr.status==200){
+			//alert('callback');
+			//var result=xhr.responseText;//서버로부터 응답을 text로 받기
+			var result=xhr.responseXML;//응답결과를 XML DOM객체로 얻어오기
+			//alert(result);
+			var title=result.getElementsByTagName("title")[0].firstChild.nodeValue;
+			var price=result.getElementsByTagName("price")[0].firstChild.nodeValue;
+			var div=document.getElementById("result");
+			div.innerHTML="도서제목:" + title +"<br>" +
+			              "가격:" + price +"<br>";
+		}
+	}
+
+</script>
+</head>
+<body>
+<!-- 
+	1. Ajax ( Asynchronous Javascript And XML)
+	- 비동기통신 방식의 자바스크립트와 XML
+	- 웹브라우저가 아닌 XMLHttpRequest객체를 통해 웹서버와 통신한다.
+	- 웹서버의 응답결과는 xml 또는 단순텍스트(html) 또는 json이다.
+	- 페이지 이동없이 결과가 화면에 반영된다.
+	
+	2. XMLHttpRequest객체를 사용한 프로그래밍 순서
+	 1) 웹브라우져가 내장하고 있는 XMLHttpRequest 객체 얻어오기
+	 2) XMLHttpRequest 객체를 통해 웹서버에 요청하기
+	 3) 콜백메소드를 통해 웹서버에서 응답된 정보를 화면에 반영하기
+ -->
+ <h2>우리우리 도서관</h2>
+ <input type="button" value="최근도서목록" onclick="getData()">
+ <div id="result">
+ </div>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
