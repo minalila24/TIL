@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>test02.html</title>
+
+<script type="text/javascript">
+
+
+	var xhr = null;
+	function search(){
+		
+		var email = document.getElementById("email").value;
+		var phone = document.getElementById("phone").value;
+		
+		xhr = new XMLHttpRequest();
+		xhr.onreadystatechange=callback;
+		xhr.open('get','findPwd.jsp?email='+email+'&phone='+phone,true);
+		xhr.send();
+		
+		
+		
+		
+	}
+	function callback(){
+		
+		if(xhr.readyState==4 && xhr.status==200){
+			
+			var xml=xhr.responseXML;
+			var code= xml.getElementsByTagName("code")[0];
+			var u = code.firstChild.nodeValue;
+			var span = document.getElementById("result");
+			
+			if(u == 'false'){
+				
+				alert("해당 정보가 업습니다.");
+				var email = document.getElementById("email");
+				var phone = document.getElementById("phone");
+				email.value="";
+				phone.value="";
+				email.focus();
+			}
+			span.innerHTML=u;
+			
+			
+			
+		}
+		
+	}
+	
+
+
+
+</script>
+</head>
+
+
+
+<body>
+<h1>아이디찾기</h1>
+<!-- 이메일과 전화번호를 입력받아 ajax를 사용해서 아이디를 조회해서
+div에 출력해 보세요. (myusers테이블사용)
+ -->
+이메일 <input type="text" id="email">
+전화번호 <input type="text" id="phone">
+<input type="button" value="찾기" onclick="search()">
+<div id="result" style="color:red;font-size:12px"></div>
+</body>
+</html>
+
+
+
