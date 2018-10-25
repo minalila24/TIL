@@ -1,0 +1,122 @@
+<style type="text/css">
+	.comm{width:350px;height: 100px;border:1px solid #aaa;margin-bottom: 3px;}
+</style>
+<script type="text/javascript">
+	var xhr=null;
+	function addComments(){
+		xhr=new XMLHttpRequest();
+		xhr.onreadystatechange=insertOk;
+		xhr.open('post','comments.do?cmd=insert',true);
+		//post요청시 설정하기
+		xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+		var id=document.getElementById("id").value;
+		var comments=document.getElementById("comments").value;
+		var param="id=" + id +"&comments=" + comments;
+		//post요청시 파라미터를 send메소드를 통해 보낸다.
+		xhr.send(param);
+	}
+	function insertOk(){
+		if(xhr.readyState==4 && xhr.status==200){
+			//alert("success");
+			var xml=xhr.responseXML;
+			var code=xml.getElementsByTagName("code")[0].firstChild.nodeValue;
+			if(code=='success'){
+				document.getElementById("id").value="";
+				document.getElementById("comments").value="";
+				getList();//전체 댓글목록 다시 얻어오기
+			}else{
+				alert("등록실패");
+			}
+		}
+	}
+	var xhr1=null;
+	function getList(){
+		xhr1=new XMLHttpRequest();
+		xhr1.onreadystatechange=listOk;
+		xhr1.open('get','comments.do?cmd=list',true);
+		xhr1.send();
+	}
+	function listOk(){
+		if(xhr1.readyState==4 && xhr1.status==200){
+			removeAll();//기존댓글 지우기
+			//alert("list");
+			var xml=xhr1.responseXML;
+			var commList=xml.getElementsByTagName("comm");
+			var list=document.getElementById("commList");
+			for(var i=0;i<commList.length;i++){
+				var comm=commList[i];
+				var num=comm.getElementsByTagName("num")[0].firstChild.nodeValue;
+				var id=comm.getElementsByTagName("id")[0].firstChild.nodeValue;
+				var comments=comm.getElementsByTagName("comments")[0].firstChild.nodeValue;
+				var div=document.createElement("div");
+				var html="아이디:" + id + "<br>" +
+				         "댓글:" + comments +"<br>" +
+				         "<a href='javascript:removeComments("+num+")'>삭제</a>"
+				div.innerHTML=html;
+				div.className="comm";
+				list.appendChild(div);
+			}
+		}
+	}
+	
+	var xhr2=null;
+	function removeComments(num){ // ajax로 삭제하기
+		
+		xhr2 = new XMLHttpRequest();
+		xhr2.onreadystatechange=deleteOk;
+		xhr2.open('get','comments.do?cmd=delete&num='+num,true);
+		xhr2.send();
+		
+		
+		
+	}
+	
+	function deleteOk(){
+		
+		
+		function listOk(){
+			if(xhr1.readyState==4 && xhr1.status==200){
+				
+				var xml = xhr.responseXML;
+				var code = xml.getElementsByTagName("code")[0].firstElementChild.nodeValue;
+				if(code == 'success'){
+					
+					getList();
+				}else{
+					
+					alert("삭제 실패");
+				}
+			}
+		}
+		
+	}
+	
+	
+	
+	function removeAll(){//전체댓글지우기
+		var commList=document.getElementById("commList");
+		var nodes=commList.childNodes;
+		for(var i=nodes.length-1;i>=0;i--){//뒤에서부터 자식요소 지우기
+			var child=nodes.item(i);
+			commList.removeChild(child);
+		}	
+	}
+</script>
+</head>
+<body onload="getList()">
+<div>
+	<h1>신과 함께 2</h1>
+	<img src="images/m1.png" style="width:400px;height: 200px">
+	<p>영화소개....</p>
+</div>
+<div>
+	<div id="commList"></div>
+	<div id="commAdd">
+		아이디<br><input type="text" id="id"><br>
+		영화평<br>
+		<textarea rows="3" cols="50" id="comments"></textarea><br>
+		<input type="button" value="등록" onclick="addComments()">
+	</div>
+</div>
+</body>
+</html>
